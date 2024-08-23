@@ -15,6 +15,48 @@
       "when": 1724432602031,
       "tag": "0001_mean_sharon_carter",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1724433859978,
+      "tag": "0002_fast_marvel_apes",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1724437178098,
+      "tag": "0003_aromatic_stone_men",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1724440412185,
+      "tag": "0004_serious_longshot",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1724440434224,
+      "tag": "0005_jittery_king_cobra",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1724441290469,
+      "tag": "0006_fearless_nighthawk",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1724441299109,
+      "tag": "0007_new_loners",
+      "breakpoints": true
     }
   ]
 }

@@ -10,6 +10,7 @@ import {
 export const competitions = pgTable('competitions', {
   id: integer('id').primaryKey(),
   name: varchar('name').notNull(),
+  year: integer('year').notNull(),
 });
 
 export const teams = pgTable('teams', {
@@ -36,7 +37,7 @@ export const players = pgTable('players', {
 export const playerAppearances = pgTable('player_appearances', {
   id: serial('id').primaryKey(),
   matchId: integer('match_id').notNull(),
-  matchDate: timestamp('match_date').notNull(),
+  matchDate: varchar('match_date').notNull(),
   competitionId: integer('competition_id')
     .notNull()
     .references(() => competitions.id),
