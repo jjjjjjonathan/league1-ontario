@@ -17,6 +17,16 @@ export const teams = pgTable('teams', {
   name: varchar('name').notNull(),
 });
 
+export const competitionTeams = pgTable('competition_teams', {
+  id: serial('id').primaryKey(),
+  competitionId: integer('competition_id')
+    .notNull()
+    .references(() => competitions.id),
+  teamId: integer('team_id')
+    .notNull()
+    .references(() => teams.id),
+});
+
 export const players = pgTable('players', {
   id: integer('id').primaryKey(),
   name: varchar('name').notNull(),
