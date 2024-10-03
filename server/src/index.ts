@@ -6,14 +6,19 @@ import {
 import { createContext } from './context';
 import { competitionsRouter } from './routers/competitions';
 import { router } from './trpc';
+import cors from '@fastify/cors';
 
 const appRouter = router({
   competitions: competitionsRouter,
 });
 
-type AppRouter = typeof appRouter;
+export type AppRouter = typeof appRouter;
 
 const server = fastify();
+
+server.register(cors, {
+  origin: 'http://localhost:3001',
+});
 
 server.register(fastifyTRPCPlugin, {
   prefix: '/trpc',
