@@ -1,7 +1,7 @@
 import { router, publicProcedure } from '../trpc';
 import { z } from 'zod';
 import db from '../db';
-import { and, eq, lte, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { competitions, playerAppearances, players, teams } from '../db/schema';
 
 export const playerAppearancesRouter = router({
@@ -29,12 +29,13 @@ export const playerAppearancesRouter = router({
           } > '2001-01-01'::date then ${
             playerAppearances.minutes
           } else ${0} end)`.mapWith(playerAppearances.minutes),
-
           u20Minutes: sql<number>`sum(case when ${
             players.dateOfBirth
           } > '2004-01-01'::date then ${
             playerAppearances.minutes
           } else ${0} end)`.mapWith(playerAppearances.minutes),
+          minimumU23Minutes: competitions.minimumU23Minutes,
+          minimumU20Minutes: competitions.minimumU20Minutes,
         })
         .from(playerAppearances)
         .innerJoin(players, eq(players.id, playerAppearances.playerId))
@@ -48,8 +49,12 @@ export const playerAppearancesRouter = router({
             eq(playerAppearances.teamId, input.teamId),
             eq(playerAppearances.competitionId, input.competitionId)
           )
+        )
+        .groupBy(
+          competitions.minimumU23Minutes,
+          competitions.minimumU20Minutes
         );
 
-      return result;
+      return result[0];
     }),
 });

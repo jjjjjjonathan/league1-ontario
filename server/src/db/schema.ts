@@ -11,6 +11,8 @@ export const competitions = pgTable('competitions', {
   id: integer('id').primaryKey(),
   name: varchar('name').notNull(),
   year: integer('year').notNull(),
+  minimumU23Minutes: integer('minimum_u23_minutes').notNull().default(0),
+  minimumU20Minutes: integer('minimum_u20_minutes').notNull().default(0),
 });
 
 export const teams = pgTable('teams', {

@@ -57,6 +57,20 @@
       "when": 1724441299109,
       "tag": "0007_new_loners",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1728059301115,
+      "tag": "0008_careful_network",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1728059350232,
+      "tag": "0009_dry_callisto",
+      "breakpoints": true
     }
   ]
 }
