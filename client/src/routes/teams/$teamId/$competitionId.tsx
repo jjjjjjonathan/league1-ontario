@@ -1,6 +1,7 @@
 import { trpc } from '@/utils/trpc';
 import { createFileRoute } from '@tanstack/react-router';
 import { MinutesChart } from '@/components/minutes-chart';
+import { SquadStats } from '@/components/squad-stats';
 
 export const Route = createFileRoute('/teams/$teamId/$competitionId')({
   component: TeamComponent,
@@ -28,6 +29,10 @@ function TeamComponent() {
           totalMinutes={data.u20Minutes}
           minimumMinutes={data.minimumU20Minutes}
           minutesType='U-20'
+        />
+        <SquadStats
+          teamId={Number(teamId)}
+          competitionId={Number(competitionId)}
         />
       </div>
     );
