@@ -1,5 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { trpc } from '../utils/trpc';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { trpc } from '@/utils/trpc';
 import { useState } from 'react';
 import {
   Select,
@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-export const Route = createFileRoute('/competitions')({
+export const Route = createFileRoute('/competitions/')({
   component: CompetitionsComponent,
 });
 
@@ -58,7 +58,16 @@ function CompetitionSelect({ year }: { year: number }) {
       <>
         <ul>
           {data.map((competition) => (
-            <li key={competition.id}>{competition.name}</li>
+            <li key={competition.id}>
+              <Link
+                to='/competitions/$competitionId'
+                params={{
+                  competitionId: competition.id.toString(10),
+                }}
+              >
+                {competition.name}
+              </Link>
+            </li>
           ))}
         </ul>
       </>

@@ -1,7 +1,7 @@
 import { router, publicProcedure } from '../trpc';
 import { z } from 'zod';
 import db from '../db';
-import { competitions } from '../db/schema';
+import { competitions, teams, competitionTeams } from '../db/schema';
 import { eq } from 'drizzle-orm';
 
 export const competitionsRouter = router({
@@ -27,6 +27,21 @@ export const competitionsRouter = router({
         })
         .from(competitions)
         .where(eq(competitions.year, input.year));
+
+      return result;
+    }),
+
+  teamsInCompetition: publicProcedure
+    .input(z.object({ competitionId: z.number() }))
+    .query(async ({ input }) => {
+      const result = await db
+        .select({
+          id: teams.id,
+          name: teams.name,
+        })
+        .from(competitionTeams)
+        .innerJoin(teams, eq(teams.id, competitionTeams.teamId))
+        .where(eq(competitionTeams.competitionId, input.competitionId));
 
       return result;
     }),
