@@ -5,11 +5,13 @@ import {
 } from '@trpc/server/adapters/fastify';
 import { createContext } from './context';
 import { competitionsRouter } from './routers/competitions';
+import { playerAppearancesRouter } from './routers/playerApperances';
 import { router } from './trpc';
 import cors from '@fastify/cors';
 
 const appRouter = router({
   competitions: competitionsRouter,
+  playerAppearances: playerAppearancesRouter,
 });
 
 export type AppRouter = typeof appRouter;

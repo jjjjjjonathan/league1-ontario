@@ -1,3 +1,4 @@
+import { trpc } from '@/utils/trpc';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/teams/$teamId/$competitionId')({
@@ -6,6 +7,17 @@ export const Route = createFileRoute('/teams/$teamId/$competitionId')({
 
 function TeamComponent() {
   const { teamId, competitionId } = Route.useParams();
+  const { data, isLoading } = trpc.playerAppearances.totalYouthMinutes.useQuery(
+    { teamId: Number(teamId), competitionId: Number(competitionId) }
+  );
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (data) {
+    return <p>This is data: {JSON.stringify(data)}</p>;
+  }
 
   return (
     <p>
