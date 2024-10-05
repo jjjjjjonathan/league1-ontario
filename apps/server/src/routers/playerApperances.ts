@@ -69,14 +69,10 @@ export const playerAppearancesRouter = router({
       const result = await db
         .select({
           squadSize: countDistinct(playerAppearances.playerId),
-          averageAge: sql<number>`
-              ROUND(
-                CAST(
-                  avg(
-                    date_part('year', age(${players.dateOfBirth})
-                  )
-                ) AS numeric
-              ), 1)`.mapWith(Number),
+          averageAge:
+            sql<number>`ROUND(CAST(avg(date_part('year', age(${players.dateOfBirth}))) AS numeric), 1)`.mapWith(
+              Number
+            ),
           averageAgeByMinute:
             sql<number>`ROUND(CAST(sum(date_part('year', age(${players.dateOfBirth})) * ${playerAppearances.minutes}) / sum(${playerAppearances.minutes}) AS numeric), 1)`.mapWith(
               Number
@@ -95,25 +91,19 @@ export const playerAppearancesRouter = router({
             ),
           averageAgeByU23Minutes: sql<number>`round(cast(sum(case when ${
             players.dateOfBirth
-          } > '2001-01-01'::date then 
-              date_part(
-                'year', age(${players.dateOfBirth})
-            ) * ${playerAppearances.minutes} else ${0} end) / sum(case when ${
-              players.dateOfBirth
-            } > '2001-01-01'::date then ${
-              playerAppearances.minutes
-            } else ${0} end) as numeric), 1)`.mapWith(Number),
+          } > '2001-01-01'::date then date_part('year', age(${players.dateOfBirth})) * ${playerAppearances.minutes} else ${0} end) / sum(case when ${
+            players.dateOfBirth
+          } > '2001-01-01'::date then ${
+            playerAppearances.minutes
+          } else ${0} end) as numeric), 1)`.mapWith(Number),
 
           averageAgeByU20Minutes: sql<number>`round(cast(sum(case when ${
             players.dateOfBirth
-          } > '2004-01-01'::date then 
-              date_part(
-                'year', age(${players.dateOfBirth})
-            ) * ${playerAppearances.minutes} else ${0} end) / sum(case when ${
-              players.dateOfBirth
-            } > '2004-01-01'::date then ${
-              playerAppearances.minutes
-            } else ${0} end) as numeric), 1)`.mapWith(Number),
+          } > '2004-01-01'::date then date_part('year', age(${players.dateOfBirth})) * ${playerAppearances.minutes} else ${0} end) / sum(case when ${
+            players.dateOfBirth
+          } > '2004-01-01'::date then ${
+            playerAppearances.minutes
+          } else ${0} end) as numeric), 1)`.mapWith(Number),
 
           averageSqaudAgeNoU23: sql<number>`round(cast(AVG(date_part('year', age(${players.dateOfBirth}))) FILTER (WHERE ${players.dateOfBirth} <= '2001-01-01'::date)as numeric), 1)`,
 
