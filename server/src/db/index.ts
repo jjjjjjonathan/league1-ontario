@@ -10,6 +10,6 @@ export const migrationClient = postgres(process.env.PG_URL || '', { max: 1 });
 
 // for query purposes
 const queryClient = postgres(process.env.PG_URL || '');
-const db = drizzle(queryClient);
+const db = drizzle(queryClient, { logger: true });
 
 export default db;
