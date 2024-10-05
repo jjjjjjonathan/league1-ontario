@@ -99,10 +99,10 @@ export const playerAppearancesRouter = router({
               date_part(
                 'year', age(${players.dateOfBirth})
             ) * ${playerAppearances.minutes} else ${0} end) / sum(case when ${
-            players.dateOfBirth
-          } > '2001-01-01'::date then ${
-            playerAppearances.minutes
-          } else ${0} end) as numeric), 1)`.mapWith(Number),
+              players.dateOfBirth
+            } > '2001-01-01'::date then ${
+              playerAppearances.minutes
+            } else ${0} end) as numeric), 1)`.mapWith(Number),
 
           averageAgeByU20Minutes: sql<number>`round(cast(sum(case when ${
             players.dateOfBirth
@@ -110,10 +110,10 @@ export const playerAppearancesRouter = router({
               date_part(
                 'year', age(${players.dateOfBirth})
             ) * ${playerAppearances.minutes} else ${0} end) / sum(case when ${
-            players.dateOfBirth
-          } > '2004-01-01'::date then ${
-            playerAppearances.minutes
-          } else ${0} end) as numeric), 1)`.mapWith(Number),
+              players.dateOfBirth
+            } > '2004-01-01'::date then ${
+              playerAppearances.minutes
+            } else ${0} end) as numeric), 1)`.mapWith(Number),
 
           averageSqaudAgeNoU23: sql<number>`round(cast(AVG(date_part('year', age(${players.dateOfBirth}))) FILTER (WHERE ${players.dateOfBirth} <= '2001-01-01'::date)as numeric), 1)`,
 
@@ -127,7 +127,8 @@ export const playerAppearancesRouter = router({
         .where(
           and(
             eq(playerAppearances.teamId, input.teamId),
-            eq(playerAppearances.competitionId, input.competitionId)
+            eq(playerAppearances.competitionId, input.competitionId),
+            gte(playerAppearances.minutes, 1)
           )
         );
       return result[0];
@@ -161,7 +162,8 @@ export const playerAppearancesRouter = router({
             and(
               eq(playerAppearances.competitionId, input.competitionId),
               eq(playerAppearances.teamId, input.teamId),
-              gte(players.dateOfBirth, '2001-01-01')
+              gte(players.dateOfBirth, '2001-01-01'),
+              gte(playerAppearances.minutes, 1)
             )
           )
           .groupBy(players.id)
