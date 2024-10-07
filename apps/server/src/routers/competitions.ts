@@ -1,14 +1,18 @@
 import { router, publicProcedure } from '../trpc';
 import { z } from 'zod';
 import db from '../db';
-import { competitions, teams, competitionTeams } from '../db/schema';
-import { eq } from 'drizzle-orm';
+import {
+  competitions,
+  teams,
+  competitionTeams,
+  playerAppearances,
+  players,
+} from '../db/schema';
+import { eq, sql } from 'drizzle-orm';
 
 export const competitionsRouter = router({
   featuredCompetitions: publicProcedure.query(async () => {
-    const result = await db.select().from(competitions);
-
-    return result;
+    return await db.select().from(competitions);
   }),
 
   competitionYears: publicProcedure.query(async () => {
@@ -40,10 +44,24 @@ export const competitionsRouter = router({
         .select({
           id: teams.id,
           name: teams.name,
+          u23Minutes:
+            sql<number>`sum(case when ${players.dateOfBirth} > '2001-01-01'::date then ${playerAppearances.minutes} else ${0} end)`.mapWith(
+              playerAppearances.minutes
+            ),
+          u20Minutes:
+            sql<number>`sum(case when ${players.dateOfBirth} > '2004-01-01'::date then ${playerAppearances.minutes} else ${0} end)`.mapWith(
+              playerAppearances.minutes
+            ),
         })
         .from(competitionTeams)
         .innerJoin(teams, eq(teams.id, competitionTeams.teamId))
-        .where(eq(competitionTeams.competitionId, input.competitionId));
+        .innerJoin(
+          playerAppearances,
+          eq(playerAppearances.teamId, competitionTeams.teamId)
+        )
+        .innerJoin(players, eq(players.id, playerAppearances.playerId))
+        .where(eq(competitionTeams.competitionId, input.competitionId))
+        .groupBy(teams.id);
 
       return result;
     }),
