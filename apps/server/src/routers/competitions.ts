@@ -5,8 +5,10 @@ import { competitions, teams, competitionTeams } from '../db/schema';
 import { eq } from 'drizzle-orm';
 
 export const competitionsRouter = router({
-  competitionList: publicProcedure.query(() => {
-    return 'this will be list of competitions';
+  featuredCompetitions: publicProcedure.query(async () => {
+    const result = await db.select().from(competitions);
+
+    return result;
   }),
 
   competitionYears: publicProcedure.query(async () => {

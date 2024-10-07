@@ -3,6 +3,12 @@ export default {
 	darkMode: ["class"],
 	content: ['./src/**/*.{ts,tsx}'],
 	theme: {
+		container: {
+			center: true,
+			padding: {
+				DEFAULT: '1rem'
+			}
+		},
 		extend: {
 			borderRadius: {
 				lg: 'var(--radius)',
