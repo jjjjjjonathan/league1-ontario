@@ -64,7 +64,7 @@ function Header({ teamName, competitionName, isLoading }: HeaderProps) {
   }
   return (
     <header className='bg-slate-400 p-6'>
-      <h1 className='text-xl font-semibold'>{teamName}</h1>
+      <h1 className='truncate text-xl font-semibold'>{teamName}</h1>
       <h2 className='text-base'>{competitionName}</h2>
     </header>
   );

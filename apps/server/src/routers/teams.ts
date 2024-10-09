@@ -90,11 +90,31 @@ export const teamsRouter = router({
           averageSqaudAgeNoU23: sql<number>`round(cast(AVG(date_part('year', age(${players.dateOfBirth}))) FILTER (WHERE ${players.dateOfBirth} <= '2001-01-01'::date)as numeric), 1)`,
 
           averageSqaudAgeNoU20: sql<number>`round(cast(AVG(date_part('year', age(${players.dateOfBirth}))) FILTER (WHERE ${players.dateOfBirth} <= '2004-01-01'::date)as numeric), 1)`,
+
+          u23Minutes: sql<number>`sum(case when ${
+            players.dateOfBirth
+          } > '2001-01-01'::date then ${
+            playerAppearances.minutes
+          } else ${0} end)`.mapWith(playerAppearances.minutes),
+
+          u20Minutes: sql<number>`sum(case when ${
+            players.dateOfBirth
+          } > '2004-01-01'::date then ${
+            playerAppearances.minutes
+          } else ${0} end)`.mapWith(playerAppearances.minutes),
+
+          minimumU23Minutes: competitions.minimumU23Minutes,
+
+          minimumU20Minutes: competitions.minimumU20Minutes,
         })
         .from(players)
         .innerJoin(
           playerAppearances,
           eq(players.id, playerAppearances.playerId)
+        )
+        .innerJoin(
+          competitions,
+          eq(competitions.id, playerAppearances.competitionId)
         )
         .where(
           and(
@@ -102,6 +122,10 @@ export const teamsRouter = router({
             eq(playerAppearances.competitionId, input.competitionId),
             gte(playerAppearances.minutes, 1)
           )
+        )
+        .groupBy(
+          competitions.minimumU23Minutes,
+          competitions.minimumU20Minutes
         );
       return result[0];
     }),

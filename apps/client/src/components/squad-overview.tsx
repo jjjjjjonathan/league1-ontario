@@ -1,6 +1,14 @@
 import { trpc } from '@/utils/trpc';
 import { AgePieChart } from './age-pie-chart';
 import { AgeStatsTable } from './age-stats-table';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+import { MinutesChart } from './minutes-chart';
 
 type SquadOverviewProps = {
   teamId: number;
@@ -21,16 +29,6 @@ export const SquadOverview = ({
   }
 
   if (data) {
-    const chartData = [
-      {
-        ageGroup: 'senior',
-        players: data.seniorSquadSize,
-        fill: 'var(--color-senior)',
-      },
-      { ageGroup: 'u23', players: data.u23SquadSize, fill: 'var(--color-u23)' },
-      { ageGroup: 'u20', players: data.u20SquadSize, fill: 'var(--color-u20)' },
-    ];
-
     const ageStatsTableData = [
       { label: 'Average Squad Age', value: data.averageAge },
       {
@@ -55,10 +53,38 @@ export const SquadOverview = ({
       },
     ];
     return (
-      <>
-        <AgePieChart chartData={chartData} squadSize={data.squadSize} />
+      <main className='mt-4 flex flex-col gap-y-4'>
+        <Carousel className='mx-auto w-80'>
+          <CarouselContent>
+            <CarouselItem>
+              <AgePieChart
+                seniorSquadSize={data.seniorSquadSize}
+                u23SquadSize={data.u23SquadSize}
+                u20SquadSize={data.u20SquadSize}
+                squadSize={data.squadSize}
+              />
+            </CarouselItem>
+            <CarouselItem>
+              <MinutesChart
+                totalMinutes={data.u23Minutes}
+                minimumMinutes={data.minimumU23Minutes}
+                minutesType='U-23'
+              />
+            </CarouselItem>
+            <CarouselItem>
+              <MinutesChart
+                totalMinutes={data.u20Minutes}
+                minimumMinutes={data.minimumU20Minutes}
+                minutesType='U-20'
+              />
+            </CarouselItem>
+          </CarouselContent>
+          <CarouselPrevious className='hidden sm:flex' />
+          <CarouselNext className='hidden sm:flex' />
+        </Carousel>
+
         <AgeStatsTable ageStatsTableData={ageStatsTableData} />
-      </>
+      </main>
     );
   }
 };
