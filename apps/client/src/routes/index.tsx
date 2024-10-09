@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { trpc } from '@/utils/trpc';
-import { Card, CardTitle } from '@/components/ui/card';
+import { Card, CardTitle, CardHeader } from '@/components/ui/card';
 
 export const Route = createFileRoute('/')({
   component: HomeComponent,
@@ -22,7 +22,9 @@ function HomeComponent() {
               params={{ competitionId: competition.id.toString(10) }}
             >
               <Card className='p-2'>
-                <CardTitle>{competition.name}</CardTitle>
+                <CardHeader>
+                  <CardTitle>{competition.name}</CardTitle>
+                </CardHeader>
               </Card>
             </Link>
           ))}
