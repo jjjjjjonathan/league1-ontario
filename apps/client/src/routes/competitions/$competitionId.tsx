@@ -49,6 +49,9 @@ function CompetitionComponent() {
                       teamId: team.id.toString(10),
                       competitionId,
                     }}
+                    search={{
+                      tab: 'overview',
+                    }}
                   >
                     {team.name}
                   </Link>

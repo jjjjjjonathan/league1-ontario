@@ -11,6 +11,8 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
 } from '@/components/ui/chart';
 
 type ChartData = {
@@ -44,10 +46,9 @@ export const AgePieChart = ({ chartData, squadSize }: AgePieChartProps) => {
   } satisfies ChartConfig;
 
   return (
-    <Card className='flex flex-col'>
+    <Card className='mx-6 my-4 flex flex-col bg-slate-100'>
       <CardHeader className='items-center pb-0'>
-        <CardTitle>Squad Analysis</CardTitle>
-        <CardDescription>Summary of squad by age group</CardDescription>
+        <CardTitle>Age Groups</CardTitle>
       </CardHeader>
       <CardContent className='flex-1 pb-0'>
         <ChartContainer
@@ -96,6 +97,12 @@ export const AgePieChart = ({ chartData, squadSize }: AgePieChartProps) => {
                 }}
               />
             </Pie>
+            <ChartLegend
+              content={
+                <ChartLegendContent nameKey='ageGroup'>test</ChartLegendContent>
+              }
+              className='-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center'
+            />
           </PieChart>
         </ChartContainer>
       </CardContent>
