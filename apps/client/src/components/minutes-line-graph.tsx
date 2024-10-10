@@ -12,7 +12,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { trpc } from '@/utils/trpc';
+import { trpc } from '@/router';
 import { format } from '@formkit/tempo';
 
 type MinutesLineGraphProps = {

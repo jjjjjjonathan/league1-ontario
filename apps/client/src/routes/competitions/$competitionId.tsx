@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { trpc } from '@/utils/trpc';
+import { trpc } from '@/router';
 import {
   Table,
   TableBody,
@@ -11,6 +11,14 @@ import {
 
 export const Route = createFileRoute('/competitions/$competitionId')({
   component: CompetitionComponent,
+  loader: async ({
+    context: { trpcQueryUtils },
+    params: { competitionId },
+  }) => {
+    await trpcQueryUtils.competitions.teamsInCompetition.ensureData({
+      competitionId: Number(competitionId),
+    });
+  },
 });
 
 const U20_MINUTES = 'u20Minutes';
@@ -18,11 +26,9 @@ const U23_MINUTES = 'u23Minutes';
 
 function CompetitionComponent() {
   const { competitionId } = Route.useParams();
-  const { data, isLoading } = trpc.competitions.teamsInCompetition.useQuery({
+  const { data } = trpc.competitions.teamsInCompetition.useQuery({
     competitionId: Number(competitionId),
   });
-
-  if (isLoading) return <p>Loading...</p>;
 
   if (data) {
     return (

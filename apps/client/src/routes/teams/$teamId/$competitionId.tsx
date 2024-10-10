@@ -1,4 +1,4 @@
-import { trpc } from '@/utils/trpc';
+import { trpc } from '@/router';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 import { Skeleton } from '@/components/ui/skeleton';

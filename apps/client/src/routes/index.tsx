@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { trpc } from '@/utils/trpc';
+import { trpc } from '@/router';
 import { Card, CardTitle, CardHeader } from '@/components/ui/card';
 
 export const Route = createFileRoute('/')({

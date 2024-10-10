@@ -14,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { trpc } from '@/utils/trpc';
+import { trpc } from '@/router';
 
 type PlayerListProps = {
   teamId: number;
