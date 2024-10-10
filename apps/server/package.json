@@ -23,7 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^10.0.0",
-    "@trpc/server": "^10.45.2",
+    "@trpc/server": "11.0.0-rc.566",
     "csv-parser": "^3.0.0",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",
