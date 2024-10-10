@@ -45,6 +45,8 @@ function TeamComponent() {
             teamId={Number(teamId)}
             competitionId={Number(competitionId)}
             youthCutoff='2001-01-01'
+            title='U-23 Minutes'
+            minimumMinutes={data.minimumU23Minutes}
           />
         ) : null}
         {tab === 'u20' ? (
@@ -52,6 +54,8 @@ function TeamComponent() {
             teamId={Number(teamId)}
             competitionId={Number(competitionId)}
             youthCutoff='2004-01-01'
+            title='U-20 Minutes'
+            minimumMinutes={data.minimumU20Minutes}
           />
         ) : null}
       </>

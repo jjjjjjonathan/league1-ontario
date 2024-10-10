@@ -25,6 +25,7 @@
     "vitest": "^2.1.2"
   },
   "dependencies": {
+    "@formkit/tempo": "^0.1.2",
     "@league1-ontario/server": "workspace:^",
     "@radix-ui/react-collapsible": "^1.1.1",
     "@radix-ui/react-progress": "^1.1.0",

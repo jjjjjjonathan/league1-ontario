@@ -1,16 +1,7 @@
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  XAxis,
-  LabelList,
-  YAxis,
-  ReferenceLine,
-} from 'recharts';
+import { CartesianGrid, Line, LineChart, YAxis, ReferenceLine } from 'recharts';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -22,17 +13,22 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { trpc } from '@/utils/trpc';
+import { format } from '@formkit/tempo';
 
 type MinutesLineGraphProps = {
   teamId: number;
   competitionId: number;
   youthCutoff: string;
+  title: string;
+  minimumMinutes: number;
 };
 
 export const MinutesLineGraph = ({
   teamId,
   competitionId,
   youthCutoff,
+  title,
+  minimumMinutes,
 }: MinutesLineGraphProps) => {
   const { data, isLoading } = trpc.teams.getMinutesByMatch.useQuery({
     teamId,
@@ -46,8 +42,8 @@ export const MinutesLineGraph = ({
 
   if (data) {
     const chartData = data.map((match) => ({
-      date: match.date,
-      minutes: match.totalMinutes,
+      date: format(match.date, 'M D'),
+      minutes: match.runningTotalMinutes,
     }));
 
     const chartConfig = {
@@ -60,8 +56,7 @@ export const MinutesLineGraph = ({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Line Chart - Linear</CardTitle>
-          <CardDescription>January - June 2024</CardDescription>
+          <CardTitle>{title}</CardTitle>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig}>
@@ -74,14 +69,16 @@ export const MinutesLineGraph = ({
               }}
             >
               <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey='date'
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                tickFormatter={(value) => value.slice(0, 3)}
+              <YAxis
+                domain={[
+                  0,
+                  minimumMinutes + 1000 <=
+                  data[data.length - 1].runningTotalMinutes
+                    ? minimumMinutes + 1000
+                    : data[data.length - 1].runningTotalMinutes,
+                ]}
+                className=''
               />
-              {/* <YAxis domain={[0, 1000]} /> */}
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
@@ -92,20 +89,13 @@ export const MinutesLineGraph = ({
                 stroke='var(--color-minutes)'
                 strokeWidth={2}
                 dot={false}
-              >
-                <LabelList
-                  position='top'
-                  offset={12}
-                  className='fill-foreground'
-                  fontSize={12}
-                />
-              </Line>
-              {/* <ReferenceLine
-                y={900}
-                label='Max'
+              ></Line>
+              <ReferenceLine
+                y={minimumMinutes}
+                label='Minimum'
                 stroke='red'
                 strokeDasharray='3 3'
-              /> */}
+              />
             </LineChart>
           </ChartContainer>
         </CardContent>

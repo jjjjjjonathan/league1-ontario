@@ -23,6 +23,8 @@ export const teamsRouter = router({
         .select({
           teamName: teams.name,
           competitionName: competitions.name,
+          minimumU23Minutes: competitions.minimumU23Minutes,
+          minimumU20Minutes: competitions.minimumU20Minutes,
         })
         .from(competitionTeams)
         .innerJoin(teams, eq(teams.id, competitionTeams.teamId))
@@ -139,24 +141,38 @@ export const teamsRouter = router({
       })
     )
     .query(async ({ input }) => {
+      const sq = db.$with('sq').as(
+        db
+          .select({
+            date: playerAppearances.matchDate,
+            totalMinutes:
+              sql<number>`sum(case when ${players.dateOfBirth} >= ${input.youthCutoff} then ${playerAppearances.minutes} else ${0} end)`
+                .mapWith(playerAppearances.minutes)
+                .as('total_minutes'),
+          })
+          .from(playerAppearances)
+          .innerJoin(players, eq(players.id, playerAppearances.playerId))
+          .where(
+            and(
+              eq(playerAppearances.teamId, input.teamId),
+              eq(playerAppearances.competitionId, input.competitionId)
+            )
+          )
+          .groupBy(playerAppearances.matchDate)
+          .orderBy(playerAppearances.matchDate)
+      );
+
       const result = await db
+        .with(sq)
         .select({
-          date: playerAppearances.matchDate,
-          totalMinutes:
-            sql<number>`sum(case when ${players.dateOfBirth} >= ${input.youthCutoff} then ${playerAppearances.minutes} else ${0} end)`.mapWith(
+          date: sq.date,
+          minutes: sq.totalMinutes,
+          runningTotalMinutes:
+            sql<number>`sum(${sq.totalMinutes}) OVER (ORDER BY ${sq.date})`.mapWith(
               playerAppearances.minutes
             ),
         })
-        .from(playerAppearances)
-        .innerJoin(players, eq(players.id, playerAppearances.playerId))
-        .where(
-          and(
-            eq(playerAppearances.teamId, input.teamId),
-            eq(playerAppearances.competitionId, input.competitionId)
-          )
-        )
-        .groupBy(playerAppearances.matchDate)
-        .orderBy(playerAppearances.matchDate);
+        .from(sq);
 
       return result;
     }),
