@@ -8,7 +8,7 @@ import {
   teams,
   competitionTeams,
 } from '../db/schema';
-import { countDistinct, sql, and, eq, gte } from 'drizzle-orm';
+import { countDistinct, sql, and, eq, gte, desc } from 'drizzle-orm';
 
 export const teamsRouter = router({
   getTeamInfo: publicProcedure
@@ -23,6 +23,8 @@ export const teamsRouter = router({
         .select({
           teamName: teams.name,
           competitionName: competitions.name,
+          minimumU23Minutes: competitions.minimumU23Minutes,
+          minimumU20Minutes: competitions.minimumU20Minutes,
         })
         .from(competitionTeams)
         .innerJoin(teams, eq(teams.id, competitionTeams.teamId))
@@ -128,5 +130,83 @@ export const teamsRouter = router({
           competitions.minimumU20Minutes
         );
       return result[0];
+    }),
+
+  getMinutesByMatch: publicProcedure
+    .input(
+      z.object({
+        teamId: z.number(),
+        competitionId: z.number(),
+        youthCutoff: z.string().date(),
+      })
+    )
+    .query(async ({ input }) => {
+      const sq = db.$with('sq').as(
+        db
+          .select({
+            date: playerAppearances.matchDate,
+            totalMinutes:
+              sql<number>`sum(case when ${players.dateOfBirth} >= ${input.youthCutoff} then ${playerAppearances.minutes} else ${0} end)`
+                .mapWith(playerAppearances.minutes)
+                .as('total_minutes'),
+          })
+          .from(playerAppearances)
+          .innerJoin(players, eq(players.id, playerAppearances.playerId))
+          .where(
+            and(
+              eq(playerAppearances.teamId, input.teamId),
+              eq(playerAppearances.competitionId, input.competitionId)
+            )
+          )
+          .groupBy(playerAppearances.matchDate)
+          .orderBy(playerAppearances.matchDate)
+      );
+
+      const result = await db
+        .with(sq)
+        .select({
+          date: sq.date,
+          minutes: sq.totalMinutes,
+          runningTotalMinutes:
+            sql<number>`sum(${sq.totalMinutes}) OVER (ORDER BY ${sq.date})`.mapWith(
+              playerAppearances.minutes
+            ),
+        })
+        .from(sq);
+
+      return result;
+    }),
+
+  getPlayersInAgeGroup: publicProcedure
+    .input(
+      z.object({
+        teamId: z.number(),
+        competitionId: z.number(),
+        youthCutoff: z.string().date(),
+      })
+    )
+    .query(async ({ input }) => {
+      const result = await db
+        .select({
+          id: players.id,
+          name: players.name,
+          totalMinutes: sql<number>`sum(${playerAppearances.minutes})`
+            .mapWith(playerAppearances.minutes)
+            .as('total_minutes'),
+        })
+        .from(playerAppearances)
+        .innerJoin(players, eq(players.id, playerAppearances.playerId))
+        .where(
+          and(
+            eq(playerAppearances.competitionId, input.competitionId),
+            eq(playerAppearances.teamId, input.teamId),
+            gte(players.dateOfBirth, input.youthCutoff),
+            gte(playerAppearances.minutes, 1)
+          )
+        )
+        .groupBy(players.id)
+        .orderBy(sql`total_minutes DESC`);
+
+      return result;
     }),
 });

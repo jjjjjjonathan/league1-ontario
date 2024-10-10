@@ -54,9 +54,9 @@ export const SquadOverview = ({
     ];
     return (
       <main className='mt-4 flex flex-col gap-y-4'>
-        <Carousel className='mx-auto w-80'>
+        <Carousel className='mx-auto w-80 lg:w-5/6'>
           <CarouselContent>
-            <CarouselItem>
+            <CarouselItem className='basis-full lg:basis-1/3'>
               <AgePieChart
                 seniorSquadSize={data.seniorSquadSize}
                 u23SquadSize={data.u23SquadSize}
@@ -64,14 +64,14 @@ export const SquadOverview = ({
                 squadSize={data.squadSize}
               />
             </CarouselItem>
-            <CarouselItem>
+            <CarouselItem className='basis-full lg:basis-1/3'>
               <MinutesChart
                 totalMinutes={data.u23Minutes}
                 minimumMinutes={data.minimumU23Minutes}
                 minutesType='U-23'
               />
             </CarouselItem>
-            <CarouselItem>
+            <CarouselItem className='basis-full lg:basis-1/3'>
               <MinutesChart
                 totalMinutes={data.u20Minutes}
                 minimumMinutes={data.minimumU20Minutes}

@@ -18,6 +18,7 @@ type CSVData = {
   goals: number;
   ownGoals: number;
   minutes: number;
+  starter: number;
 };
 
 type Player = {
@@ -30,7 +31,7 @@ type PlayerAppearance = {
   competitionId: number;
   matchId: number;
   matchDate: string;
-  played: number;
+  played: boolean;
   teamId: number;
   playerId: number;
   singleYellow: number;
@@ -39,6 +40,7 @@ type PlayerAppearance = {
   goals: number;
   ownGoals: number;
   minutes: number;
+  starter: boolean;
 };
 
 const readCSVFile = (filePath: string): Promise<CSVData[]> => {
@@ -52,7 +54,7 @@ const readCSVFile = (filePath: string): Promise<CSVData[]> => {
   });
 };
 
-const filePath = 'reports.competitions.playerAppearances1724271963537.csv';
+const filePath = 'w-premier.csv';
 
 readCSVFile(filePath)
   .then(async (data) => {
@@ -74,7 +76,6 @@ readCSVFile(filePath)
         competitionId: playerAppearance.competitionId,
         matchId: playerAppearance.matchId,
         matchDate: playerAppearance.matchDate,
-        played: playerAppearance.played,
         teamId: playerAppearance.teamId,
         playerId: playerAppearance.playerId,
         singleYellow: playerAppearance.singleYellow,
@@ -83,11 +84,9 @@ readCSVFile(filePath)
         goals: playerAppearance.goals,
         ownGoals: playerAppearance.ownGoals,
         minutes: playerAppearance.minutes,
+        played: playerAppearance.played === 1 ? true : false,
+        starter: playerAppearance.starter === 1 ? true : false,
       })
-    );
-
-    const filteredAppearances = mappedPlayerAppearances.filter(
-      (playerAppearance) => playerAppearance.played === 1
     );
 
     await db.insert(playerAppearances).values(mappedPlayerAppearances);

@@ -5,6 +5,7 @@ import {
   date,
   serial,
   timestamp,
+  boolean,
 } from 'drizzle-orm/pg-core';
 
 export const competitions = pgTable('competitions', {
@@ -39,7 +40,7 @@ export const players = pgTable('players', {
 export const playerAppearances = pgTable('player_appearances', {
   id: serial('id').primaryKey(),
   matchId: integer('match_id').notNull(),
-  matchDate: varchar('match_date').notNull(),
+  matchDate: date('match_date').notNull(),
   competitionId: integer('competition_id')
     .notNull()
     .references(() => competitions.id),
@@ -55,4 +56,6 @@ export const playerAppearances = pgTable('player_appearances', {
   goals: integer('goals').notNull(),
   ownGoals: integer('own_goals').notNull(),
   minutes: integer('minutes').notNull(),
+  played: boolean('played').notNull(),
+  starter: boolean('starter').notNull(),
 });

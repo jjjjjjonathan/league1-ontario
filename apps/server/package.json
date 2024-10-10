@@ -15,7 +15,8 @@
     "push": "drizzle-kit push",
     "studio": "drizzle-kit studio",
     "teams": "tsx utils/importTeams.ts",
-    "players": "tsx utils/importPlayers.ts"
+    "players": "tsx utils/importPlayers.ts",
+    "editPlayers": "tsx utils/editPlayerNames.ts"
   },
   "keywords": [],
   "author": "",
