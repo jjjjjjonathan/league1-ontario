@@ -8,7 +8,7 @@ import {
   teams,
   competitionTeams,
 } from '../db/schema';
-import { countDistinct, sql, and, eq, gte } from 'drizzle-orm';
+import { countDistinct, sql, and, eq, gte, desc } from 'drizzle-orm';
 
 export const teamsRouter = router({
   getTeamInfo: publicProcedure
@@ -173,6 +173,39 @@ export const teamsRouter = router({
             ),
         })
         .from(sq);
+
+      return result;
+    }),
+
+  getPlayersInAgeGroup: publicProcedure
+    .input(
+      z.object({
+        teamId: z.number(),
+        competitionId: z.number(),
+        youthCutoff: z.string().date(),
+      })
+    )
+    .query(async ({ input }) => {
+      const result = await db
+        .select({
+          id: players.id,
+          name: players.name,
+          totalMinutes: sql<number>`sum(${playerAppearances.minutes})`
+            .mapWith(playerAppearances.minutes)
+            .as('total_minutes'),
+        })
+        .from(playerAppearances)
+        .innerJoin(players, eq(players.id, playerAppearances.playerId))
+        .where(
+          and(
+            eq(playerAppearances.competitionId, input.competitionId),
+            eq(playerAppearances.teamId, input.teamId),
+            gte(players.dateOfBirth, input.youthCutoff),
+            gte(playerAppearances.minutes, 1)
+          )
+        )
+        .groupBy(players.id)
+        .orderBy(sql`total_minutes DESC`);
 
       return result;
     }),

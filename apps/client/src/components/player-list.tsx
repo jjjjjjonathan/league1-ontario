@@ -19,25 +19,28 @@ import { trpc } from '@/utils/trpc';
 type PlayerListProps = {
   teamId: number;
   competitionId: number;
+  youthCutoff: string;
+  title: string;
 };
 
-export const PlayerList = ({ teamId, competitionId }: PlayerListProps) => {
-  const { data, isLoading } =
-    trpc.playerAppearances.playerListByAgeGroup.useQuery({
-      teamId,
-      competitionId,
-    });
+export const PlayerList = ({
+  teamId,
+  competitionId,
+  youthCutoff,
+  title,
+}: PlayerListProps) => {
+  const { data, isLoading } = trpc.teams.getPlayersInAgeGroup.useQuery({
+    teamId,
+    competitionId,
+    youthCutoff,
+  });
 
   if (isLoading) return <p>Loading...</p>;
 
   if (data) {
     return (
       <div className='flex flex-row justify-evenly'>
-        <PlayerTable title='U-23 Players' players={data} />
-        <PlayerTable
-          title='U-20 Players'
-          players={data.filter((player) => player.isU20)}
-        />
+        <PlayerTable title={title} players={data} />
       </div>
     );
   }
@@ -49,7 +52,6 @@ type PlayerTableProps = {
     id: number;
     name: string;
     totalMinutes: number;
-    isU20: boolean;
   }[];
 };
 
@@ -58,7 +60,7 @@ function PlayerTable({ title, players }: PlayerTableProps) {
     .map((player) => player.totalMinutes)
     .reduce((a, b) => a + b, 0);
   return (
-    <Card className='flex flex-col'>
+    <Card className='flex flex-col bg-slate-100'>
       <CardHeader className='items-center pb-0'>
         <CardTitle>{title}</CardTitle>
       </CardHeader>

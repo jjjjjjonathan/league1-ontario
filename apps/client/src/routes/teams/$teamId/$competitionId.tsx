@@ -6,8 +6,8 @@ import { SquadOverview } from '@/components/squad-overview';
 import { MinutesLineGraph } from '@/components/minutes-line-graph';
 import { Link } from '@tanstack/react-router';
 import { Separator } from '@/components/ui/separator';
-import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { PlayerList } from '@/components/player-list';
 
 const OVERVIEW = 'overview';
 const U23 = 'u23';
@@ -29,9 +29,6 @@ function TeamComponent() {
     teamId: Number(teamId),
     competitionId: Number(competitionId),
   });
-  const [selectedTab, setSelectedTab] = useState<'overview' | 'u23' | 'u20'>(
-    tab,
-  );
 
   if (isLoading) {
     return <Header teamName='' competitionName='' isLoading={isLoading} />;
@@ -52,22 +49,38 @@ function TeamComponent() {
           />
         ) : null}
         {tab === 'u23' ? (
-          <MinutesLineGraph
-            teamId={Number(teamId)}
-            competitionId={Number(competitionId)}
-            youthCutoff='2001-01-01'
-            title='U-23 Minutes'
-            minimumMinutes={data.minimumU23Minutes}
-          />
+          <div className='flex flex-col gap-y-8'>
+            <MinutesLineGraph
+              teamId={Number(teamId)}
+              competitionId={Number(competitionId)}
+              youthCutoff='2001-01-01'
+              title='U-23 Minutes'
+              minimumMinutes={data.minimumU23Minutes}
+            />
+            <PlayerList
+              teamId={Number(teamId)}
+              competitionId={Number(competitionId)}
+              youthCutoff='2001-01-01'
+              title='U-23 Players'
+            />
+          </div>
         ) : null}
         {tab === 'u20' ? (
-          <MinutesLineGraph
-            teamId={Number(teamId)}
-            competitionId={Number(competitionId)}
-            youthCutoff='2004-01-01'
-            title='U-20 Minutes'
-            minimumMinutes={data.minimumU20Minutes}
-          />
+          <div className='flex flex-col gap-y-8'>
+            <MinutesLineGraph
+              teamId={Number(teamId)}
+              competitionId={Number(competitionId)}
+              youthCutoff='2004-01-01'
+              title='U-20 Minutes'
+              minimumMinutes={data.minimumU20Minutes}
+            />
+            <PlayerList
+              teamId={Number(teamId)}
+              competitionId={Number(competitionId)}
+              youthCutoff='2004-01-01'
+              title='U-20 Players'
+            />
+          </div>
         ) : null}
 
         <footer className='fixed bottom-0 left-0 z-50 flex w-full flex-row items-center justify-center space-x-4 text-xl font-semibold'>
@@ -78,10 +91,7 @@ function TeamComponent() {
               teamId: teamId.toString(),
               competitionId: competitionId.toString(),
             }}
-            className={cn(
-              selectedTab === OVERVIEW ? 'bg-slate-500' : 'bg-inherit',
-            )}
-            onClick={() => setSelectedTab(OVERVIEW)}
+            className={cn(tab === OVERVIEW ? 'bg-slate-500' : 'bg-inherit')}
           >
             Overview
           </Link>
@@ -93,8 +103,7 @@ function TeamComponent() {
               teamId: teamId.toString(),
               competitionId: competitionId.toString(),
             }}
-            className={cn(selectedTab === U23 ? 'bg-slate-500' : 'bg-inherit')}
-            onClick={() => setSelectedTab(U23)}
+            className={cn(tab === U23 ? 'bg-slate-500' : 'bg-inherit')}
           >
             U-23
           </Link>
@@ -106,8 +115,7 @@ function TeamComponent() {
               teamId: teamId.toString(),
               competitionId: competitionId.toString(),
             }}
-            className={cn(selectedTab === U20 ? 'bg-slate-500' : 'bg-inherit')}
-            onClick={() => setSelectedTab(U20)}
+            className={cn(tab === U20 ? 'bg-slate-500' : 'bg-inherit')}
           >
             U-20
           </Link>
