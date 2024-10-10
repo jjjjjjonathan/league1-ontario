@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SquadOverview } from '@/components/squad-overview';
+import { MinutesLineGraph } from '@/components/minutes-line-graph';
 
 const tabSchema = z.object({
   tab: z.enum(['overview', 'u23', 'u20']).catch('overview'),
@@ -37,6 +38,20 @@ function TeamComponent() {
           <SquadOverview
             teamId={Number(teamId)}
             competitionId={Number(competitionId)}
+          />
+        ) : null}
+        {tab === 'u23' ? (
+          <MinutesLineGraph
+            teamId={Number(teamId)}
+            competitionId={Number(competitionId)}
+            youthCutoff='2001-01-01'
+          />
+        ) : null}
+        {tab === 'u20' ? (
+          <MinutesLineGraph
+            teamId={Number(teamId)}
+            competitionId={Number(competitionId)}
+            youthCutoff='2004-01-01'
           />
         ) : null}
       </>

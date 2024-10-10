@@ -129,4 +129,35 @@ export const teamsRouter = router({
         );
       return result[0];
     }),
+
+  getMinutesByMatch: publicProcedure
+    .input(
+      z.object({
+        teamId: z.number(),
+        competitionId: z.number(),
+        youthCutoff: z.string().date(),
+      })
+    )
+    .query(async ({ input }) => {
+      const result = await db
+        .select({
+          date: playerAppearances.matchDate,
+          totalMinutes:
+            sql<number>`sum(case when ${players.dateOfBirth} >= ${input.youthCutoff} then ${playerAppearances.minutes} else ${0} end)`.mapWith(
+              playerAppearances.minutes
+            ),
+        })
+        .from(playerAppearances)
+        .innerJoin(players, eq(players.id, playerAppearances.playerId))
+        .where(
+          and(
+            eq(playerAppearances.teamId, input.teamId),
+            eq(playerAppearances.competitionId, input.competitionId)
+          )
+        )
+        .groupBy(playerAppearances.matchDate)
+        .orderBy(playerAppearances.matchDate);
+
+      return result;
+    }),
 });
