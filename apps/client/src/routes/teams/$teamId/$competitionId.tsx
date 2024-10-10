@@ -33,10 +33,12 @@ function TeamComponent() {
           competitionName={data.competitionName}
           isLoading={isLoading}
         />
-        <SquadOverview
-          teamId={Number(teamId)}
-          competitionId={Number(competitionId)}
-        />
+        {tab === 'overview' ? (
+          <SquadOverview
+            teamId={Number(teamId)}
+            competitionId={Number(competitionId)}
+          />
+        ) : null}
       </>
     );
   }
