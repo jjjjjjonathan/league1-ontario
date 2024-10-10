@@ -4,6 +4,14 @@ import { z } from 'zod';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SquadOverview } from '@/components/squad-overview';
 import { MinutesLineGraph } from '@/components/minutes-line-graph';
+import { Link } from '@tanstack/react-router';
+import { Separator } from '@/components/ui/separator';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
+
+const OVERVIEW = 'overview';
+const U23 = 'u23';
+const U20 = 'u20';
 
 const tabSchema = z.object({
   tab: z.enum(['overview', 'u23', 'u20']).catch('overview'),
@@ -21,6 +29,9 @@ function TeamComponent() {
     teamId: Number(teamId),
     competitionId: Number(competitionId),
   });
+  const [selectedTab, setSelectedTab] = useState<'overview' | 'u23' | 'u20'>(
+    tab,
+  );
 
   if (isLoading) {
     return <Header teamName='' competitionName='' isLoading={isLoading} />;
@@ -58,6 +69,49 @@ function TeamComponent() {
             minimumMinutes={data.minimumU20Minutes}
           />
         ) : null}
+
+        <footer className='fixed bottom-0 left-0 z-50 flex w-full flex-row items-center justify-center space-x-4 text-xl font-semibold'>
+          <Link
+            to='/teams/$teamId/$competitionId'
+            search={{ tab: 'overview' }}
+            params={{
+              teamId: teamId.toString(),
+              competitionId: competitionId.toString(),
+            }}
+            className={cn(
+              selectedTab === OVERVIEW ? 'bg-slate-500' : 'bg-inherit',
+            )}
+            onClick={() => setSelectedTab(OVERVIEW)}
+          >
+            Overview
+          </Link>
+          <Separator orientation='vertical' className='h-5 bg-slate-300' />
+          <Link
+            to='/teams/$teamId/$competitionId'
+            search={{ tab: 'u23' }}
+            params={{
+              teamId: teamId.toString(),
+              competitionId: competitionId.toString(),
+            }}
+            className={cn(selectedTab === U23 ? 'bg-slate-500' : 'bg-inherit')}
+            onClick={() => setSelectedTab(U23)}
+          >
+            U-23
+          </Link>
+          <Separator orientation='vertical' className='h-5 bg-slate-300' />
+          <Link
+            to='/teams/$teamId/$competitionId'
+            search={{ tab: 'u20' }}
+            params={{
+              teamId: teamId.toString(),
+              competitionId: competitionId.toString(),
+            }}
+            className={cn(selectedTab === U20 ? 'bg-slate-500' : 'bg-inherit')}
+            onClick={() => setSelectedTab(U20)}
+          >
+            U-20
+          </Link>
+        </footer>
       </>
     );
   }
