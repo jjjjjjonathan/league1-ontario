@@ -49,12 +49,9 @@ export const MinutesChart = ({
     },
   } satisfies ChartConfig;
   return (
-    <Card className='flex flex-col'>
+    <Card className='mx-6 flex flex-col bg-slate-100'>
       <CardHeader className='items-center pb-0'>
         <CardTitle>{minutesType} Minutes</CardTitle>
-        <CardDescription>
-          Minimum of {minimumMinutes.toLocaleString()} minutes by season end
-        </CardDescription>
       </CardHeader>
       <CardContent className='flex-1 pb-0'>
         <ChartContainer
@@ -111,7 +108,7 @@ export const MinutesChart = ({
         </ChartContainer>
       </CardContent>
       <CardFooter className='flex-col gap-2 text-sm'>
-        <div className='flex items-center gap-2 font-medium leading-none'>
+        <div className='leading-1 flex items-center gap-2 font-medium'>
           {totalMinutes >= minimumMinutes
             ? 'The minimum minutes threshold has been reached.'
             : `${minimumMinutes - totalMinutes} minutes are needed to reach the minimum threshold.`}

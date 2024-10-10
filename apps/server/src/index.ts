@@ -6,11 +6,13 @@ import {
 import { createContext } from './context';
 import { competitionsRouter } from './routers/competitions';
 import { playerAppearancesRouter } from './routers/playerApperances';
+import { teamsRouter } from './routers/teams';
 import { router } from './trpc';
 import cors from '@fastify/cors';
 
 const appRouter = router({
   competitions: competitionsRouter,
+  teams: teamsRouter,
   playerAppearances: playerAppearancesRouter,
 });
 

@@ -1,19 +1,5 @@
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { Card, CardContent } from '@/components/ui/card';
 
 type AgeStatsTableProps = {
   ageStatsTableData: {
@@ -26,15 +12,15 @@ const StatsTableRow = ({ label, value }: { label: string; value: number }) => {
   return (
     <TableRow>
       <TableCell>{label}</TableCell>
-      <TableCell className='font-semibold text-right'>{value}</TableCell>
+      <TableCell className='text-right font-semibold'>{value}</TableCell>
     </TableRow>
   );
 };
 
 export const AgeStatsTable = ({ ageStatsTableData }: AgeStatsTableProps) => {
   return (
-    <Card className='flex flex-col'>
-      <CardContent className='flex-1 pb-0'>
+    <Card className='mx-6 flex flex-col bg-slate-100'>
+      <CardContent className='w-full flex-1 pb-0'>
         <Table>
           <TableBody>
             {ageStatsTableData.map((row) => (

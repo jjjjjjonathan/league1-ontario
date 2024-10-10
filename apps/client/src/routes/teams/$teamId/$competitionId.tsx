@@ -1,47 +1,45 @@
 import { trpc } from '@/utils/trpc';
 import { createFileRoute } from '@tanstack/react-router';
-import { MinutesChart } from '@/components/minutes-chart';
-import { SquadStats } from '@/components/squad-stats';
-import { PlayerList } from '@/components/player-list';
+import { z } from 'zod';
+import { Skeleton } from '@/components/ui/skeleton';
+import { SquadOverview } from '@/components/squad-overview';
+
+const tabSchema = z.object({
+  tab: z.enum(['overview', 'u23', 'u20']).catch('overview'),
+});
 
 export const Route = createFileRoute('/teams/$teamId/$competitionId')({
   component: TeamComponent,
+  validateSearch: tabSchema,
 });
 
 function TeamComponent() {
   const { teamId, competitionId } = Route.useParams();
-  const { data, isLoading } = trpc.playerAppearances.totalYouthMinutes.useQuery(
-    { teamId: Number(teamId), competitionId: Number(competitionId) }
-  );
+  const { tab } = Route.useSearch();
+  const { data, isLoading } = trpc.teams.getTeamInfo.useQuery({
+    teamId: Number(teamId),
+    competitionId: Number(competitionId),
+  });
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Header teamName='' competitionName='' isLoading={isLoading} />;
   }
 
   if (data) {
     return (
-      <div className='flex flex-col'>
-        <div className='flex flex-row justify-evenly'>
-          <MinutesChart
-            totalMinutes={data.u23Minutes}
-            minimumMinutes={data.minimumU23Minutes}
-            minutesType='U-23'
-          />
-          <MinutesChart
-            totalMinutes={data.u20Minutes}
-            minimumMinutes={data.minimumU20Minutes}
-            minutesType='U-20'
-          />
-        </div>
-        <SquadStats
-          teamId={Number(teamId)}
-          competitionId={Number(competitionId)}
+      <>
+        <Header
+          teamName={data.teamName}
+          competitionName={data.competitionName}
+          isLoading={isLoading}
         />
-        <PlayerList
-          teamId={Number(teamId)}
-          competitionId={Number(competitionId)}
-        />
-      </div>
+        {tab === 'overview' ? (
+          <SquadOverview
+            teamId={Number(teamId)}
+            competitionId={Number(competitionId)}
+          />
+        ) : null}
+      </>
     );
   }
 
@@ -49,5 +47,27 @@ function TeamComponent() {
     <p>
       This is team ID #{teamId} in competition {competitionId}
     </p>
+  );
+}
+type HeaderProps = {
+  teamName?: string;
+  competitionName?: string;
+  isLoading: boolean;
+};
+
+function Header({ teamName, competitionName, isLoading }: HeaderProps) {
+  if (isLoading) {
+    return (
+      <header className='bg-slate-400 p-6'>
+        <Skeleton className='h-6 w-24 leading-7' />
+        <Skeleton className='h-4 w-24 leading-6' />
+      </header>
+    );
+  }
+  return (
+    <header className='bg-slate-400 p-6'>
+      <h1 className='truncate text-xl font-semibold'>{teamName}</h1>
+      <h2 className='text-base'>{competitionName}</h2>
+    </header>
   );
 }
