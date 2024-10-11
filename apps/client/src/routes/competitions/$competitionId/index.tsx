@@ -9,7 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-export const Route = createFileRoute('/competitions/$competitionId')({
+export const Route = createFileRoute('/competitions/$competitionId/')({
   component: CompetitionComponent,
   loader: async ({
     context: { trpcQueryUtils },
@@ -50,13 +50,10 @@ function CompetitionComponent() {
               <TableRow key={team.id}>
                 <TableCell className='overflow-hidden text-ellipsis'>
                   <Link
-                    to='/teams/$teamId/$competitionId'
+                    to='/competitions/$competitionId/teams/$teamId'
                     params={{
                       teamId: team.id.toString(10),
                       competitionId,
-                    }}
-                    search={{
-                      tab: 'overview',
                     }}
                   >
                     {team.name}
