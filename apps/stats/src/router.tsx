@@ -21,7 +21,7 @@ export const trpcQueryUtils = createTRPCQueryUtils({
 export function createRouter() {
   const router = createTanStackRouter({
     routeTree,
-    defaultPreload: 'intent',
+    defaultPreload: false,
     defaultPendingComponent: () => <p>Loading...</p>,
     Wrap: function WrapComponent({ children }) {
       return (

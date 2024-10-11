@@ -21,6 +21,7 @@ function HomeComponent() {
               key={competition.id}
               to='/competitions/$competitionId'
               params={{ competitionId: competition.id.toString(10) }}
+              preload={false}
             >
               <Card className='p-2'>
                 <CardHeader>
