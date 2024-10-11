@@ -12,7 +12,50 @@ importers:
         specifier: ^2.1.3
         version: 2.1.3
 
-  apps/client:
+  apps/server:
+    dependencies:
+      '@fastify/cors':
+        specifier: ^10.0.0
+        version: 10.0.1
+      '@trpc/server':
+        specifier: 11.0.0-rc.566
+        version: 11.0.0-rc.566
+      csv-parser:
+        specifier: ^3.0.0
+        version: 3.0.0
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
+      drizzle-orm:
+        specifier: ^0.33.0
+        version: 0.33.0(@types/react@18.3.11)(postgres@3.4.4)(react@18.3.1)
+      fastify:
+        specifier: ^5.0.0
+        version: 5.0.0
+      postgres:
+        specifier: ^3.4.4
+        version: 3.4.4
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@types/node':
+        specifier: ^22.5.0
+        version: 22.7.4
+      drizzle-kit:
+        specifier: ^0.24.1
+        version: 0.24.2
+      tsx:
+        specifier: ^4.17.0
+        version: 4.19.1
+      typescript:
+        specifier: ^5.5.4
+        version: 5.6.2
+      vitest:
+        specifier: ^2.1.2
+        version: 2.1.2(@types/node@22.7.4)
+
+  apps/stats:
     dependencies:
       '@formkit/tempo':
         specifier: ^0.1.2
@@ -123,49 +166,6 @@ importers:
       vite:
         specifier: ^5.4.4
         version: 5.4.8(@types/node@22.7.4)
-      vitest:
-        specifier: ^2.1.2
-        version: 2.1.2(@types/node@22.7.4)
-
-  apps/server:
-    dependencies:
-      '@fastify/cors':
-        specifier: ^10.0.0
-        version: 10.0.1
-      '@trpc/server':
-        specifier: 11.0.0-rc.566
-        version: 11.0.0-rc.566
-      csv-parser:
-        specifier: ^3.0.0
-        version: 3.0.0
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
-      drizzle-orm:
-        specifier: ^0.33.0
-        version: 0.33.0(@types/react@18.3.11)(postgres@3.4.4)(react@18.3.1)
-      fastify:
-        specifier: ^5.0.0
-        version: 5.0.0
-      postgres:
-        specifier: ^3.4.4
-        version: 3.4.4
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
-    devDependencies:
-      '@types/node':
-        specifier: ^22.5.0
-        version: 22.7.4
-      drizzle-kit:
-        specifier: ^0.24.1
-        version: 0.24.2
-      tsx:
-        specifier: ^4.17.0
-        version: 4.19.1
-      typescript:
-        specifier: ^5.5.4
-        version: 5.6.2
       vitest:
         specifier: ^2.1.2
         version: 2.1.2(@types/node@22.7.4)
