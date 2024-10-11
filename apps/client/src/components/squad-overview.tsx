@@ -1,4 +1,4 @@
-import { trpc } from '@/utils/trpc';
+import { trpc } from '@/router';
 import { AgePieChart } from './age-pie-chart';
 import { AgeStatsTable } from './age-stats-table';
 import {

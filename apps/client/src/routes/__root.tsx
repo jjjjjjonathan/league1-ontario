@@ -1,7 +1,12 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router';
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import type { trpcQueryUtils } from '../router';
 
-export const Route = createRootRoute({
+export interface RouterAppContext {
+  trpcQueryUtils: typeof trpcQueryUtils;
+}
+
+export const Route = createRootRouteWithContext<RouterAppContext>()({
   component: RootComponent,
 });
 

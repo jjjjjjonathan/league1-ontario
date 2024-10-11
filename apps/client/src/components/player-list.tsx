@@ -14,36 +14,24 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { trpc } from '@/utils/trpc';
+
+type Player = {
+  id: number;
+  name: string;
+  totalMinutes: number;
+};
 
 type PlayerListProps = {
-  teamId: number;
-  competitionId: number;
-  youthCutoff: string;
+  data: Player[];
   title: string;
 };
 
-export const PlayerList = ({
-  teamId,
-  competitionId,
-  youthCutoff,
-  title,
-}: PlayerListProps) => {
-  const { data, isLoading } = trpc.teams.getPlayersInAgeGroup.useQuery({
-    teamId,
-    competitionId,
-    youthCutoff,
-  });
-
-  if (isLoading) return <p>Loading...</p>;
-
-  if (data) {
-    return (
-      <div className='flex flex-row justify-evenly'>
-        <PlayerTable title={title} players={data} />
-      </div>
-    );
-  }
+export const PlayerList = ({ data, title }: PlayerListProps) => {
+  return (
+    <div className='flex flex-row justify-evenly'>
+      <PlayerTable title={title} players={data} />
+    </div>
+  );
 };
 
 type PlayerTableProps = {

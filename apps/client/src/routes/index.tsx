@@ -1,15 +1,16 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { trpc } from '@/utils/trpc';
+import { trpc } from '@/router';
 import { Card, CardTitle, CardHeader } from '@/components/ui/card';
 
 export const Route = createFileRoute('/')({
   component: HomeComponent,
+  loader: async ({ context: { trpcQueryUtils } }) => {
+    await trpcQueryUtils.competitions.featuredCompetitions.ensureData();
+  },
 });
 
 function HomeComponent() {
-  const { data, isLoading } = trpc.competitions.featuredCompetitions.useQuery();
-
-  if (isLoading) return <p>Loading...</p>;
+  const { data } = trpc.competitions.featuredCompetitions.useQuery();
 
   if (data) {
     return (
