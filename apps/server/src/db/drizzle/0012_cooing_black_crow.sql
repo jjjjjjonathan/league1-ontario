@@ -1,0 +1,1 @@
+ALTER TABLE "competitions" ADD COLUMN "reference_date" date DEFAULT now() NOT NULL;
