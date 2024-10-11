@@ -45,11 +45,11 @@ export const competitionsRouter = router({
           id: teams.id,
           name: teams.name,
           u23Minutes:
-            sql<number>`sum(case when ${players.dateOfBirth} > '2001-01-01'::date then ${playerAppearances.minutes} else ${0} end)`.mapWith(
+            sql<number>`sum(case when ${players.dateOfBirth} > ${competitions.referenceDate}::date - INTERVAL '23 years' then ${playerAppearances.minutes} else ${0} end)`.mapWith(
               playerAppearances.minutes
             ),
           u20Minutes:
-            sql<number>`sum(case when ${players.dateOfBirth} > '2004-01-01'::date then ${playerAppearances.minutes} else ${0} end)`.mapWith(
+            sql<number>`sum(case when ${players.dateOfBirth} > ${competitions.referenceDate}::date - INTERVAL '20 years' then ${playerAppearances.minutes} else ${0} end)`.mapWith(
               playerAppearances.minutes
             ),
         })
@@ -60,6 +60,10 @@ export const competitionsRouter = router({
           eq(playerAppearances.teamId, competitionTeams.teamId)
         )
         .innerJoin(players, eq(players.id, playerAppearances.playerId))
+        .innerJoin(
+          competitions,
+          eq(competitions.id, competitionTeams.competitionId)
+        )
         .where(eq(competitionTeams.competitionId, input.competitionId))
         .groupBy(teams.id);
 

@@ -62,46 +62,46 @@ export const teamsRouter = router({
               Number
             ),
           u23SquadSize:
-            sql<number>`count(distinct ${playerAppearances.playerId}) FILTER (WHERE ${players.dateOfBirth} >= '2001-01-01'::date AND ${players.dateOfBirth} < '2004-01-01'::date)`.mapWith(
+            sql<number>`count(distinct ${playerAppearances.playerId}) FILTER (WHERE ${players.dateOfBirth} >= ${competitions.referenceDate}::date - INTERVAL '23 years' AND ${players.dateOfBirth} < ${competitions.referenceDate}::date - INTERVAL '20 years')`.mapWith(
               Number
             ),
           u20SquadSize:
-            sql<number>`count(distinct ${playerAppearances.playerId}) FILTER (WHERE ${players.dateOfBirth} >= '2004-01-01'::date)`.mapWith(
+            sql<number>`count(distinct ${playerAppearances.playerId}) FILTER (WHERE ${players.dateOfBirth} >= ${competitions.referenceDate}::date - INTERVAL '20 years')`.mapWith(
               Number
             ),
           seniorSquadSize:
-            sql<number>`count(distinct ${playerAppearances.playerId}) FILTER (WHERE ${players.dateOfBirth} < '2001-01-01'::date)`.mapWith(
+            sql<number>`count(distinct ${playerAppearances.playerId}) FILTER (WHERE ${players.dateOfBirth} < ${competitions.referenceDate}::date - INTERVAL '23 years')`.mapWith(
               Number
             ),
           averageAgeByU23Minutes: sql<number>`round(cast(sum(case when ${
             players.dateOfBirth
-          } > '2001-01-01'::date then date_part('year', age(${players.dateOfBirth})) * ${playerAppearances.minutes} else ${0} end) / sum(case when ${
+          } > ${competitions.referenceDate}::date - INTERVAL '23 years' then date_part('year', age(${players.dateOfBirth})) * ${playerAppearances.minutes} else ${0} end) / sum(case when ${
             players.dateOfBirth
-          } > '2001-01-01'::date then ${
+          } > ${competitions.referenceDate}::date - INTERVAL '23 years' then ${
             playerAppearances.minutes
           } else ${0} end) as numeric), 1)`.mapWith(Number),
 
           averageAgeByU20Minutes: sql<number>`round(cast(sum(case when ${
             players.dateOfBirth
-          } > '2004-01-01'::date then date_part('year', age(${players.dateOfBirth})) * ${playerAppearances.minutes} else ${0} end) / sum(case when ${
+          } > ${competitions.referenceDate}::date - INTERVAL '20 years' then date_part('year', age(${players.dateOfBirth})) * ${playerAppearances.minutes} else ${0} end) / sum(case when ${
             players.dateOfBirth
-          } > '2004-01-01'::date then ${
+          } > ${competitions.referenceDate}::date - INTERVAL '20 years' then ${
             playerAppearances.minutes
           } else ${0} end) as numeric), 1)`.mapWith(Number),
 
-          averageSqaudAgeNoU23: sql<number>`round(cast(AVG(date_part('year', age(${players.dateOfBirth}))) FILTER (WHERE ${players.dateOfBirth} <= '2001-01-01'::date)as numeric), 1)`,
+          averageSqaudAgeNoU23: sql<number>`round(cast(AVG(date_part('year', age(${players.dateOfBirth}))) FILTER (WHERE ${players.dateOfBirth} <= ${competitions.referenceDate}::date - INTERVAL '23 years')as numeric), 1)`,
 
-          averageSqaudAgeNoU20: sql<number>`round(cast(AVG(date_part('year', age(${players.dateOfBirth}))) FILTER (WHERE ${players.dateOfBirth} <= '2004-01-01'::date)as numeric), 1)`,
+          averageSqaudAgeNoU20: sql<number>`round(cast(AVG(date_part('year', age(${players.dateOfBirth}))) FILTER (WHERE ${players.dateOfBirth} <= ${competitions.referenceDate}::date - INTERVAL '20 years')as numeric), 1)`,
 
           u23Minutes: sql<number>`sum(case when ${
             players.dateOfBirth
-          } > '2001-01-01'::date then ${
+          } > ${competitions.referenceDate}::date - INTERVAL '23 years' then ${
             playerAppearances.minutes
           } else ${0} end)`.mapWith(playerAppearances.minutes),
 
           u20Minutes: sql<number>`sum(case when ${
             players.dateOfBirth
-          } > '2004-01-01'::date then ${
+          } > ${competitions.referenceDate}::date - INTERVAL '20 years' then ${
             playerAppearances.minutes
           } else ${0} end)`.mapWith(playerAppearances.minutes),
 
@@ -137,7 +137,7 @@ export const teamsRouter = router({
       z.object({
         teamId: z.number(),
         competitionId: z.number(),
-        youthCutoff: z.string().date(),
+        youthCutoff: z.number(),
       })
     )
     .query(async ({ input }) => {
@@ -146,12 +146,16 @@ export const teamsRouter = router({
           .select({
             date: playerAppearances.matchDate,
             totalMinutes:
-              sql<number>`sum(case when ${players.dateOfBirth} >= ${input.youthCutoff} then ${playerAppearances.minutes} else ${0} end)`
+              sql<number>`sum(case when ${players.dateOfBirth} >= ${competitions.referenceDate}::date - INTERVAL ${sql.raw(`'${input.youthCutoff} years'`)} then ${playerAppearances.minutes} else ${0} end)`
                 .mapWith(playerAppearances.minutes)
                 .as('total_minutes'),
           })
           .from(playerAppearances)
           .innerJoin(players, eq(players.id, playerAppearances.playerId))
+          .innerJoin(
+            competitions,
+            eq(competitions.id, playerAppearances.competitionId)
+          )
           .where(
             and(
               eq(playerAppearances.teamId, input.teamId),
@@ -184,11 +188,18 @@ export const teamsRouter = router({
         })
         .from(playerAppearances)
         .innerJoin(players, eq(players.id, playerAppearances.playerId))
+        .innerJoin(
+          competitions,
+          eq(competitions.id, playerAppearances.competitionId)
+        )
         .where(
           and(
             eq(playerAppearances.competitionId, input.competitionId),
             eq(playerAppearances.teamId, input.teamId),
-            gte(players.dateOfBirth, input.youthCutoff),
+            gte(
+              players.dateOfBirth,
+              sql`${competitions.referenceDate}::date - INTERVAL ${sql.raw(`'${input.youthCutoff} years'`)}`
+            ),
             gte(playerAppearances.minutes, 1)
           )
         )
