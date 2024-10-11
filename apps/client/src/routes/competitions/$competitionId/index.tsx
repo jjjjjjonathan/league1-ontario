@@ -55,6 +55,7 @@ function CompetitionComponent() {
                       teamId: team.id.toString(10),
                       competitionId,
                     }}
+                    preload={false}
                   >
                     {team.name}
                   </Link>
