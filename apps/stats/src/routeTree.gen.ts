@@ -17,9 +17,9 @@ import { Route as IndexImport } from './routes/index'
 import { Route as CompetitionsIndexImport } from './routes/competitions/index'
 import { Route as CompetitionsCompetitionIdIndexImport } from './routes/competitions/$competitionId/index'
 import { Route as CompetitionsCompetitionIdTeamsTeamIdLayoutImport } from './routes/competitions/$competitionId/teams/$teamId/_layout'
-import { Route as CompetitionsCompetitionIdTeamsTeamIdLayoutIndexImport } from './routes/competitions/$competitionId/teams/$teamId/_layout/index'
 import { Route as CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Import } from './routes/competitions/$competitionId/teams/$teamId/_layout/under-23'
 import { Route as CompetitionsCompetitionIdTeamsTeamIdLayoutUnder20Import } from './routes/competitions/$competitionId/teams/$teamId/_layout/under-20'
+import { Route as CompetitionsCompetitionIdTeamsTeamIdLayoutOverviewImport } from './routes/competitions/$competitionId/teams/$teamId/_layout/overview'
 
 // Create Virtual Routes
 
@@ -57,12 +57,6 @@ const CompetitionsCompetitionIdTeamsTeamIdLayoutRoute =
     getParentRoute: () => CompetitionsCompetitionIdTeamsTeamIdRoute,
   } as any)
 
-const CompetitionsCompetitionIdTeamsTeamIdLayoutIndexRoute =
-  CompetitionsCompetitionIdTeamsTeamIdLayoutIndexImport.update({
-    path: '/',
-    getParentRoute: () => CompetitionsCompetitionIdTeamsTeamIdLayoutRoute,
-  } as any)
-
 const CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Route =
   CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Import.update({
     path: '/under-23',
@@ -72,6 +66,12 @@ const CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Route =
 const CompetitionsCompetitionIdTeamsTeamIdLayoutUnder20Route =
   CompetitionsCompetitionIdTeamsTeamIdLayoutUnder20Import.update({
     path: '/under-20',
+    getParentRoute: () => CompetitionsCompetitionIdTeamsTeamIdLayoutRoute,
+  } as any)
+
+const CompetitionsCompetitionIdTeamsTeamIdLayoutOverviewRoute =
+  CompetitionsCompetitionIdTeamsTeamIdLayoutOverviewImport.update({
+    path: '/overview',
     getParentRoute: () => CompetitionsCompetitionIdTeamsTeamIdLayoutRoute,
   } as any)
 
@@ -114,6 +114,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompetitionsCompetitionIdTeamsTeamIdLayoutImport
       parentRoute: typeof CompetitionsCompetitionIdTeamsTeamIdRoute
     }
+    '/competitions/$competitionId/teams/$teamId/_layout/overview': {
+      id: '/competitions/$competitionId/teams/$teamId/_layout/overview'
+      path: '/overview'
+      fullPath: '/competitions/$competitionId/teams/$teamId/overview'
+      preLoaderRoute: typeof CompetitionsCompetitionIdTeamsTeamIdLayoutOverviewImport
+      parentRoute: typeof CompetitionsCompetitionIdTeamsTeamIdLayoutImport
+    }
     '/competitions/$competitionId/teams/$teamId/_layout/under-20': {
       id: '/competitions/$competitionId/teams/$teamId/_layout/under-20'
       path: '/under-20'
@@ -128,32 +135,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Import
       parentRoute: typeof CompetitionsCompetitionIdTeamsTeamIdLayoutImport
     }
-    '/competitions/$competitionId/teams/$teamId/_layout/': {
-      id: '/competitions/$competitionId/teams/$teamId/_layout/'
-      path: '/'
-      fullPath: '/competitions/$competitionId/teams/$teamId/'
-      preLoaderRoute: typeof CompetitionsCompetitionIdTeamsTeamIdLayoutIndexImport
-      parentRoute: typeof CompetitionsCompetitionIdTeamsTeamIdLayoutImport
-    }
   }
 }
 
 // Create and export the route tree
 
 interface CompetitionsCompetitionIdTeamsTeamIdLayoutRouteChildren {
+  CompetitionsCompetitionIdTeamsTeamIdLayoutOverviewRoute: typeof CompetitionsCompetitionIdTeamsTeamIdLayoutOverviewRoute
   CompetitionsCompetitionIdTeamsTeamIdLayoutUnder20Route: typeof CompetitionsCompetitionIdTeamsTeamIdLayoutUnder20Route
   CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Route: typeof CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Route
-  CompetitionsCompetitionIdTeamsTeamIdLayoutIndexRoute: typeof CompetitionsCompetitionIdTeamsTeamIdLayoutIndexRoute
 }
 
 const CompetitionsCompetitionIdTeamsTeamIdLayoutRouteChildren: CompetitionsCompetitionIdTeamsTeamIdLayoutRouteChildren =
   {
+    CompetitionsCompetitionIdTeamsTeamIdLayoutOverviewRoute:
+      CompetitionsCompetitionIdTeamsTeamIdLayoutOverviewRoute,
     CompetitionsCompetitionIdTeamsTeamIdLayoutUnder20Route:
       CompetitionsCompetitionIdTeamsTeamIdLayoutUnder20Route,
     CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Route:
       CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Route,
-    CompetitionsCompetitionIdTeamsTeamIdLayoutIndexRoute:
-      CompetitionsCompetitionIdTeamsTeamIdLayoutIndexRoute,
   }
 
 const CompetitionsCompetitionIdTeamsTeamIdLayoutRouteWithChildren =
@@ -181,16 +181,17 @@ export interface FileRoutesByFullPath {
   '/competitions': typeof CompetitionsIndexRoute
   '/competitions/$competitionId': typeof CompetitionsCompetitionIdIndexRoute
   '/competitions/$competitionId/teams/$teamId': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutRouteWithChildren
+  '/competitions/$competitionId/teams/$teamId/overview': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutOverviewRoute
   '/competitions/$competitionId/teams/$teamId/under-20': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutUnder20Route
   '/competitions/$competitionId/teams/$teamId/under-23': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Route
-  '/competitions/$competitionId/teams/$teamId/': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/competitions': typeof CompetitionsIndexRoute
   '/competitions/$competitionId': typeof CompetitionsCompetitionIdIndexRoute
-  '/competitions/$competitionId/teams/$teamId': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutIndexRoute
+  '/competitions/$competitionId/teams/$teamId': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutRouteWithChildren
+  '/competitions/$competitionId/teams/$teamId/overview': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutOverviewRoute
   '/competitions/$competitionId/teams/$teamId/under-20': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutUnder20Route
   '/competitions/$competitionId/teams/$teamId/under-23': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Route
 }
@@ -202,9 +203,9 @@ export interface FileRoutesById {
   '/competitions/$competitionId/': typeof CompetitionsCompetitionIdIndexRoute
   '/competitions/$competitionId/teams/$teamId': typeof CompetitionsCompetitionIdTeamsTeamIdRouteWithChildren
   '/competitions/$competitionId/teams/$teamId/_layout': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutRouteWithChildren
+  '/competitions/$competitionId/teams/$teamId/_layout/overview': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutOverviewRoute
   '/competitions/$competitionId/teams/$teamId/_layout/under-20': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutUnder20Route
   '/competitions/$competitionId/teams/$teamId/_layout/under-23': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutUnder23Route
-  '/competitions/$competitionId/teams/$teamId/_layout/': typeof CompetitionsCompetitionIdTeamsTeamIdLayoutIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -214,15 +215,16 @@ export interface FileRouteTypes {
     | '/competitions'
     | '/competitions/$competitionId'
     | '/competitions/$competitionId/teams/$teamId'
+    | '/competitions/$competitionId/teams/$teamId/overview'
     | '/competitions/$competitionId/teams/$teamId/under-20'
     | '/competitions/$competitionId/teams/$teamId/under-23'
-    | '/competitions/$competitionId/teams/$teamId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/competitions'
     | '/competitions/$competitionId'
     | '/competitions/$competitionId/teams/$teamId'
+    | '/competitions/$competitionId/teams/$teamId/overview'
     | '/competitions/$competitionId/teams/$teamId/under-20'
     | '/competitions/$competitionId/teams/$teamId/under-23'
   id:
@@ -232,9 +234,9 @@ export interface FileRouteTypes {
     | '/competitions/$competitionId/'
     | '/competitions/$competitionId/teams/$teamId'
     | '/competitions/$competitionId/teams/$teamId/_layout'
+    | '/competitions/$competitionId/teams/$teamId/_layout/overview'
     | '/competitions/$competitionId/teams/$teamId/_layout/under-20'
     | '/competitions/$competitionId/teams/$teamId/_layout/under-23'
-    | '/competitions/$competitionId/teams/$teamId/_layout/'
   fileRoutesById: FileRoutesById
 }
 
@@ -290,10 +292,14 @@ export const routeTree = rootRoute
       "filePath": "competitions/$competitionId/teams/$teamId/_layout.tsx",
       "parent": "/competitions/$competitionId/teams/$teamId",
       "children": [
+        "/competitions/$competitionId/teams/$teamId/_layout/overview",
         "/competitions/$competitionId/teams/$teamId/_layout/under-20",
-        "/competitions/$competitionId/teams/$teamId/_layout/under-23",
-        "/competitions/$competitionId/teams/$teamId/_layout/"
+        "/competitions/$competitionId/teams/$teamId/_layout/under-23"
       ]
+    },
+    "/competitions/$competitionId/teams/$teamId/_layout/overview": {
+      "filePath": "competitions/$competitionId/teams/$teamId/_layout/overview.tsx",
+      "parent": "/competitions/$competitionId/teams/$teamId/_layout"
     },
     "/competitions/$competitionId/teams/$teamId/_layout/under-20": {
       "filePath": "competitions/$competitionId/teams/$teamId/_layout/under-20.tsx",
@@ -301,10 +307,6 @@ export const routeTree = rootRoute
     },
     "/competitions/$competitionId/teams/$teamId/_layout/under-23": {
       "filePath": "competitions/$competitionId/teams/$teamId/_layout/under-23.tsx",
-      "parent": "/competitions/$competitionId/teams/$teamId/_layout"
-    },
-    "/competitions/$competitionId/teams/$teamId/_layout/": {
-      "filePath": "competitions/$competitionId/teams/$teamId/_layout/index.tsx",
       "parent": "/competitions/$competitionId/teams/$teamId/_layout"
     }
   }

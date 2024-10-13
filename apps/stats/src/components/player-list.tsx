@@ -28,7 +28,7 @@ type PlayerListProps = {
 
 export const PlayerList = ({ data, title }: PlayerListProps) => {
   return (
-    <div className='flex flex-row justify-evenly'>
+    <div className='flex flex-row justify-evenly overflow-x-hidden'>
       <PlayerTable title={title} players={data} />
     </div>
   );
