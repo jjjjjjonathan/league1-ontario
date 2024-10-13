@@ -28,7 +28,7 @@ function RootComponent() {
         />
       </TopNav>
       <Outlet />
-      <TanStackRouterDevtools position='bottom-right' />
+      {/* <TanStackRouterDevtools position='bottom-right' /> */}
     </div>
   );
 }
