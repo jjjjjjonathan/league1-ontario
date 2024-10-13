@@ -57,7 +57,11 @@ export const BottomNavItemLink = ({
     },
   };
   return (
-    <Link {...bottomNavLinkOptions} className='h-full w-full'>
+    <Link
+      {...bottomNavLinkOptions}
+      resetScroll={false}
+      className='h-full w-full'
+    >
       {({ isActive }) => {
         return (
           <BottomNavItemContent isActive={isActive}>

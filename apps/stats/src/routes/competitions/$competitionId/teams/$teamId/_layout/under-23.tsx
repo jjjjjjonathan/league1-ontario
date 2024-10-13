@@ -2,9 +2,6 @@ import { createFileRoute } from '@tanstack/react-router';
 import { trpc } from '@/router';
 import { MinutesLineGraph } from '@/components/minutes-line-graph';
 import { PlayerList } from '@/components/player-list';
-import { BottomNav, BottomNavItemLink } from '@/components/bottom-nav';
-import { Separator } from '@/components/ui/separator';
-import { SquareChartGantt, Donut, CakeSlice } from 'lucide-react';
 
 const YOUTH_CUTOFF = 23;
 
@@ -37,47 +34,12 @@ function U23Component() {
 
   return (
     <>
-      <div className='flex flex-col gap-y-8'>
-        <MinutesLineGraph
-          data={data.minutes}
-          minimumMinutes={data.minimumU23Minutes}
-          title='U-23 Minutes'
-        />
-        <PlayerList data={data.playerList} title='U-23 Players' />
-      </div>
-      <footer>
-        <BottomNav>
-          <BottomNavItemLink
-            destination='/competitions/$competitionId/teams/$teamId/overview'
-            pathParams={{
-              teamId: params.teamId,
-              competitionId: params.competitionId,
-            }}
-          >
-            <SquareChartGantt />
-          </BottomNavItemLink>
-          <Separator orientation='vertical' className='bg-slate-300' />
-          <BottomNavItemLink
-            destination='/competitions/$competitionId/teams/$teamId/under-23'
-            pathParams={{
-              teamId: params.teamId,
-              competitionId: params.competitionId,
-            }}
-          >
-            <Donut />
-          </BottomNavItemLink>
-          <Separator orientation='vertical' className='bg-slate-300' />
-          <BottomNavItemLink
-            destination='/competitions/$competitionId/teams/$teamId/under-20'
-            pathParams={{
-              teamId: params.teamId,
-              competitionId: params.competitionId,
-            }}
-          >
-            <CakeSlice />
-          </BottomNavItemLink>
-        </BottomNav>
-      </footer>
+      <MinutesLineGraph
+        data={data.minutes}
+        minimumMinutes={data.minimumU23Minutes}
+        title='U-23 Minutes'
+      />
+      <PlayerList data={data.playerList} title='U-23 Players' />
     </>
   );
 }
