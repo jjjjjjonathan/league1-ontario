@@ -3,13 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "exports": {
     "./src": "./src/index.ts"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node src/index.js",
+    "start": "node ./dist/src/index.js",
     "dev": "tsx watch src/index.ts",
     "generate": "drizzle-kit generate",
     "push": "drizzle-kit push",
