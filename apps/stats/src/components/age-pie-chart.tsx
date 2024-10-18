@@ -121,9 +121,9 @@ export const AgePieChart = ({
       <CardFooter className='flex-col gap-2 text-sm'>
         <div className='leading-1 flex items-center gap-2 font-medium'>
           {seniorSquadSize} senior player
-          {isOnePlayer(seniorSquadSize) ? '' : 's'}, {u23SquadSize} senior
-          player{isOnePlayer(u23SquadSize) ? '' : 's'}, and {u20SquadSize}{' '}
-          senior player{isOnePlayer(u20SquadSize) ? '' : 's'},
+          {isOnePlayer(seniorSquadSize) ? '' : 's'}, {u23SquadSize} U-23 player
+          {isOnePlayer(u23SquadSize) ? '' : 's'}, and {u20SquadSize} U-20 player
+          {isOnePlayer(u20SquadSize) ? '' : 's'},
         </div>
       </CardFooter>
     </Card>
